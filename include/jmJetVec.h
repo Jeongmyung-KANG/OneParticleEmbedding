@@ -18,7 +18,9 @@ class jmJetVec : public TObject {
         Double_t __rho;
         Double_t __rhoM;
 		Double_t __m;
-		
+        Double_t __subM; 
+		Double_t __jbjM; 
+        Double_t __iterM;
 		Double_t __trigPx;
 		Double_t __trigPy; 
 		Double_t __trigPz;
@@ -27,6 +29,12 @@ class jmJetVec : public TObject {
         Double_t __trigPt;
         Double_t __trigPhi;
         Double_t __trigEta;
+        
+
+        Double_t __Ax; 
+        Double_t __Ay; 
+        Double_t __Az;
+        Double_t __Ae;
 
         Double_t __trackSum;
 		Bool_t __IsTrueJet;	 
@@ -37,26 +45,16 @@ class jmJetVec : public TObject {
 		std::vector<double> __constiVectorPt; 
     public :
 
-        jmJetVec() : __px(0), __py(0), __pz(0), __pt(0), __e(0), __m(0), __eta(0), __phi(0), __A(0), __rho(0), __rhoM(0), __trigPt(0), __trigPhi(0), __trigEta(0), __trackSum(0), __trigPx(0), __trigPy(0), __trigPz(0), __trigE(0), __IsTrueJet(0), __jetIndex(0), __constiSize(0), __constiVectorPhi(0), __constiVectorEta(0), __constiVectorPt(0){};
-        jmJetVec(Double_t _px, Double_t _py, Double_t _pz, Double_t _e, Double_t _m, 
-                 Double_t _phi, Double_t _eta, 
-                 Double_t _A,
-                 Double_t _rho,
-                 Double_t _rhoM,
-				 Double_t _trigPx,
-				 Double_t _trigPy,
-				 Double_t _trigPz,
-				 Double_t _trigE,
-                 Double_t _trigPt, Double_t _trigPhi, Double_t _trigEta,
-                 Double_t _trackSum, Bool_t _IsTrueJet, int _jetIndex, int _constiSize, std::vector<double> _constiVectorPhi, std::vector<double> _constiVectorEta, std::vector<double> _constiVectorPt):
-				__px(_px), __py(_py), __pz(_pz), __pt(TMath::Sqrt(_px*_px + _py*_py)), __e(_e), __m(_m),
-                 __eta(_eta), __phi(_phi), __A(_A),
-                __rho(_rho), __rhoM(_rhoM), 
-                __trigPt(_trigPt), __trigPhi(_trigPhi), __trigEta(_trigEta),__trackSum(_trackSum), __trigPx(_trigPx), __trigPy(_trigPy), __trigPz(_trigPz), __trigE(_trigE), __IsTrueJet(_IsTrueJet), __jetIndex(_jetIndex), __constiSize(_constiSize), __constiVectorPhi(_constiVectorPhi), __constiVectorEta(_constiVectorEta), __constiVectorPt(_constiVectorPt){};
-
-        ~jmJetVec() {};
+        jmJetVec() : __px(0), __py(0), __pz(0), __pt(0), __e(0), __m(0), __subM(0), __eta(0), __phi(0), __A(0), __rho(0), __rhoM(0), __trigPt(0), __trigPhi(0), __trigEta(0), __trackSum(0), __trigPx(0), __trigPy(0), __trigPz(0), __trigE(0), __IsTrueJet(0), __jetIndex(0), __constiSize(0), __constiVectorPhi(0), __constiVectorEta(0), __constiVectorPt(0), __jbjM(0), __iterM(0), __Ax(0), __Ay(0), __Az(0), __Ae(0){};
+            
+		~jmJetVec() override{};
         
         void setJetKin(Double_t _px, Double_t _py, Double_t _pz, Double_t _e, Double_t _m);
+        void setJetPxPyPzE(Double_t _px, Double_t _py, Double_t _pz, Double_t _e);
+        void setJetSubtractedMass(Double_t _subM); 
+        void setJbjM(Double_t _jbjM); 
+        void setIterM(Double_t _iterM); 
+        void setAreaFourVector(Double_t _Ae, Double_t _Ax, Double_t _Ay, Double_t _Az); 
         void setJetPhiEta(Double_t _phi, Double_t _eta);
         void setA(Double_t _A);
         void setRho(Double_t _rho);
@@ -77,6 +75,12 @@ class jmJetVec : public TObject {
         Double_t pt() const { return __pt; }
         Double_t e() const { return __e; }
 		Double_t m() const {return __m;}
+        Double_t Ax() const{return __Ax;} 
+        Double_t Ay() const{return __Ay;}
+        Double_t Az() const{return __Az;} 
+        Double_t Ae() const{return __Ae;}
+        
+        Double_t subM() const {return __subM;}
         Double_t eta() const { return __eta; }
         Double_t phi() const { return __phi; }
         Double_t A() const { return __A; }
@@ -90,6 +94,9 @@ class jmJetVec : public TObject {
 		Double_t trigPy() const {return __trigPy;}
 		Double_t trigPz() const {return __trigPz;}
 		Double_t trigE() const {return __trigE;}
+        Double_t jbjM() const{return __jbjM;}
+        Double_t iterM() const {return __iterM;}
+
 		Bool_t IsTrueJet() const{return __IsTrueJet;} 
 		int jetIndex() const{return __jetIndex;}  
 		int constiSize() const{return __constiSize;} 
@@ -108,6 +115,12 @@ inline void jmJetVec::setJetKin(Double_t _px, Double_t _py, Double_t _pz, Double
 	__m = _m;
 }
 
+inline void jmJetVec::setJetPxPyPzE(Double_t _px, Double_t _py, Double_t _pz, Double_t _e) {
+    __px = _px;
+    __py = _py;
+    __pz = _pz;
+    __e  = _e;
+}
 inline void jmJetVec::setJetPhiEta(Double_t _phi, Double_t _eta){
     __phi = _phi;
     __eta = _eta;
@@ -160,5 +173,24 @@ inline void jmJetVec::setConstiVectorEta(std::vector<double> _constiVectorEta){
 }
 inline void jmJetVec::setConstiVectorPt(std::vector<double> _constiVectorPt){ 
 	__constiVectorPt = _constiVectorPt; 
+}
+
+inline void jmJetVec::setJetSubtractedMass(Double_t _SubM){
+    __subM = _SubM;
+}
+
+inline void jmJetVec::setJbjM(Double_t _jbjM){
+    __jbjM = _jbjM;
+}
+
+inline void jmJetVec::setIterM(Double_t _iterM){
+    __iterM = _iterM; 
+}
+
+inline void jmJetVec::setAreaFourVector(Double_t _Ae, Double_t _Ax, Double_t _Ay, Double_t _Az){ 
+    __Ae = _Ae;
+    __Ax = _Ax;
+    __Ay = _Ay; 
+    __Az = _Az;
 }
 #endif // __JMJETVEC_H__
